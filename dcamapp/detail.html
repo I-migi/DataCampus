@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <title>My Webpage</title>
+</head>
+<body style="margin: 5px; padding: 5px;">
+    <div class="header">
+        <span class="btnBack" onclick="goBack()">이전</span>
+        <a href="https://test7team.s3.ap-northeast-2.amazonaws.com/dcamapp/index.html" class="btnHome">Home</a>
+    </div>
+
+    <h3 style="color: #6B53E8; margin-bottom: 20px; margin-left: 5px;" class="center-align">
+        <span>고객 정보</span>
+      </h3>
+        <div style=" width: 95%; height: 800px; border-radius: 20px; margin:11px;  box-shadow:0px 2px 6px rgba(0, 0, 0, 0.10);">
+            <div style="margin-left: 1px; margin-top: 10px;">
+                <ul id="valuesList">
+                    <li><span id="nameSpan"></span></li>
+                    <li><span id="성별"></span></li>
+                    <span style="margin-top: 100px; margin-left:-47px;font-size: 20px; color: #5C6875; font-weight: bold;">|</span>
+                    <li><span id="age"></span></li>
+                    <li><span id="phoneSpan"></span></li>
+                    <img src="/image/줄.png" style="width: 85%; height: 5px; margin-top: 165px; margin-left: 10px;">
+                    <li><span id="운전"></span></li>
+                    <span style="margin-top: 190px; margin-left:-90px; color: #313337;font-size: 17px;">운전 유무</span>
+                    <li><span id="음주"></span></li>
+                    <span style="margin-top: 230px; margin-left:-90px; color: #313337;font-size: 17px;">음주 유무</span>
+                    <li><span id="흡연"></span></li>
+                    <span style="margin-top: 270px; margin-left:-90px; color: #313337;font-size: 17px;">흡연 유무</span>
+                    <li><span id="자녀"></span></li>
+                    <span style="margin-top: 310px; margin-left:-90px; color: #313337;font-size: 17px;">자녀 유무</span>
+                    <span style="margin-top: 370px; margin-left:-90px; color: #5C6875;font-size: 20px;font-weight: bold;">추천 보험</span>
+                    <span style="margin-top: 370px; margin-left:60px; color: #313337;font-size: 17px;">암 보험:</span>
+                    <li><span id="암보험"></span></li>
+                    <span style="margin-top: 410px; margin-left:60px; color: #313337;font-size: 17px;">자녀 보험:</span>
+                    <li><span id="자녀보험"></span></li>
+                    <span style="margin-top: 450px; margin-left:60px; color: #313337;font-size: 17px;">여행자 보험:</span>
+                    <li><span id="여행자보험"></span></li>
+                    <span style="margin-top: 490px; margin-left:60px; color: #313337;font-size: 17px;">치아 보험:</span>
+                    <li><span id="치아보험"></span></li>
+                    <span style="margin-top: 530px; margin-left:60px; color: #313337;font-size: 17px;">사망 보험:</span>
+                    <li><span id="사망보험"></span></li>
+                    <span style="margin-top: 570px; margin-left:60px; color: #313337;font-size: 17px;">운전자 보험:</span>
+                    <li><span id="운전자보험"></span></li>
+                   
+
+                </ul>
+                
+        </div> 
+        
+        </div>
+        <div id="loading-screen" class="loading-screen">
+            <img src="./image/로딩중.gif" alt="로딩 중..." class="loading-gif">
+        </div>
+        
+</body>
+
+<script>
+    function home() {
+        window.location.href="http://127.0.0.1:5503/index.html";
+    }
+    function goBack() {
+        window.history.back();
+    }
+    var queryString = window.location.search;
+    var urlParams = new URLSearchParams(queryString);
+    var customerCode = urlParams.get("code");
+    function showLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.style.display = 'flex';
+}
+
+// 로딩 화면 숨기기 함수
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.style.display = 'none';
+}
+
+// 데이터 로딩 시작 시 로딩 화면 표시
+showLoadingScreen();
+
+    fetch('https://9vod8uhybl.execute-api.us-east-2.amazonaws.com/dev')
+        .then(response => response.json())
+        .then(data => {
+            hideLoadingScreen();
+            console.log('Fetched data:', data);
+            var jsonData = JSON.parse(data.body);
+            
+
+            // Loop through the data to find the customer with the matching code
+            jsonData.forEach(obj => {
+                
+                if (obj.code === customerCode) {
+                    if (obj.렌트운전 === "O") {
+                        document.getElementById("운전").textContent = "운전 함";
+                    } else {
+                        document.getElementById("운전").textContent = "운전 안함"; 
+                    }
+                    if (obj.사망보험 === "사망보험") {
+                        document.getElementById("사망보험").textContent = "추천";
+                    } else {
+                        document.getElementById("사망보험").textContent = ""; 
+                    }
+                    document.getElementById("성별").textContent = obj.성별;
+                    if (obj.암보험 === "암보험") {
+                        document.getElementById("암보험").textContent = "추천";
+                    } else {
+                        document.getElementById("암보험").textContent = ""; 
+                    }
+                    if (obj.여행자보험 === "여행자보험") {
+                        document.getElementById("여행자보험").textContent = "추천";
+                    } else {
+                        document.getElementById("여행자보험").textContent = ""; 
+                    }                    
+                    if (obj.운전자보험 === "운전자보험") {
+                        document.getElementById("운전자보험").textContent = "추천";
+                    } else {
+                        document.getElementById("운전자보험").textContent = ""; 
+                    } 
+                    if (obj.음주여부 === "O") {
+                        document.getElementById("음주").textContent = "음주 함";
+                    } else {
+                        document.getElementById("음주").textContent = "음주 안함"; 
+                    } 
+                    if (obj.자녀보험 === "자녀보험") {
+                        document.getElementById("자녀보험").textContent = "추천";
+                    } else {
+                        document.getElementById("자녀보험").textContent = ""; 
+                    } 
+                    if (obj.자녀유무 === "O") {
+                        document.getElementById("자녀").textContent = "자녀 있음";
+                    } else {
+                        document.getElementById("자녀").textContent = "자녀 없음"; 
+                    } 
+                    if (obj.치아보험 === "치아보험") {
+                        document.getElementById("치아보험").textContent = "추천";
+                    } else {
+                        document.getElementById("치아보험").textContent = ""; 
+                    }
+                    if (obj.흡연 === "O") {
+                        document.getElementById("흡연").textContent = "흡연 함";
+                    } else {
+                        document.getElementById("흡연").textContent = "흡연 안함"; 
+                    } 
+                    document.getElementById("age").textContent = obj.age;
+                    document.getElementById("nameSpan").textContent = obj.name;
+                    document.getElementById("phoneSpan").textContent = "전화번호: " + obj.phone;
+                   
+    
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+
+</script>
+</html>
